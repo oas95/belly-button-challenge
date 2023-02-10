@@ -9,7 +9,7 @@ d3.json(url).then(function(data) {
 // Starting Dashboard 
 function init() {
 
-    let ddMenu = d3.select("#selDataset");
+    let dropdownMenu = d3.select("#selDataset");
 
     //Getting names
     d3.json(url).then((data)=> {
@@ -22,8 +22,7 @@ function init() {
             
             //Logging in id
             console.log(id);
-
-            ddMenu.append("option")
+            dropdownMenu.append("option")
             .text(id)
             .property("value", id);
 
@@ -38,6 +37,7 @@ function init() {
         //Building plots
         buildMetadata(sample_one);
         buildBarChart(sample_one);
+        buildBubbleChart(sample_one);
         buildBubbleChart(sample_one);
     });
 };
@@ -92,12 +92,12 @@ function buildBarChart(sample) {
         let otu_ids = valueData.otu_ids; 
         let otu_labels = valueData.otu_labels;
         
-        // Logging into console
+        //Logging into console
         console.log(sample_values,otu_ids,otu_labels);
 
         //Setting top ten display
         let xticks = sample_values.slice(0,10).reverse();
-        let yticks = otu_ids.slice(0,10).maps(id => `OTU ${id}`).reverse();
+        let yticks = otu_ids.slice(0,10).map(id => `OTU ${id}`).reverse();
         let labels = otu_labels.slice(0,10).reverse();
 
         //Setting up BarChart
@@ -114,7 +114,7 @@ function buildBarChart(sample) {
         };
 
         //Calling Plotly
-        Plotly.newPlot("bar", [trace], layout)
+        Plotly.newPlot("bar",[trace],layout)
     });
 };
 // Bubble chart
@@ -140,16 +140,11 @@ function buildBubbleChart(sample) {
         // Logging into console
         console.log(sample_values,otu_ids,otu_labels);
 
-        //Setting top ten display
-        let xticks = sample_values.slice(0,10).reverse();
-        let yticks = otu_ids.slice(0,10).maps(id => `OTU ${id}`).reverse();
-        let labels = otu_labels.slice(0,10).reverse();
-
-        //Setting up BarChart
-        let traceB= {
+        //Setting up BubbleChart
+        let traceB = {
             x: otu_ids,
             y: sample_values, 
-            text: labels,
+            text: otu_labels,
             mode: "markers",
             marker: {
                 size: sample_values,
@@ -160,7 +155,7 @@ function buildBubbleChart(sample) {
 
         //Layout
         let layout = {
-            title: "Top 10 OTUs Present",
+            title: "Bacteria per Sample",
             hovermode: "closest",
             xaxis: {title: "OTU ID"}
         };
